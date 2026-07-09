@@ -1,0 +1,140 @@
+﻿<Window x:Class="image_proccessing.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:image_proccessing"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="Обработка изображения" Height="738px" Width="1280px" WindowStyle="ThreeDBorderWindow" Padding="10,10,10,10" WindowStartupLocation="CenterScreen">
+
+    <Grid x:Name="MainGrid">
+
+        <StackPanel Orientation="Horizontal" Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="600" Height="50">
+            <Rectangle x:Name="colorPreview" Width="50" Height="50" Fill="#FFFFD9D9" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,20,0"/>
+            <StackPanel>
+                <TextBlock x:Name="txtCoordinates" Text="Координаты: "/>
+                <TextBlock x:Name="txtColor" Text="Цвет: "/>
+                <TextBlock x:Name="txtBrightness" Text="Яркость: "/>
+            </StackPanel>
+        </StackPanel>
+        <Button x:Name="btnLoadImage" 
+                Content="Загрузить изображение"
+                VerticalAlignment="Top"
+                Padding="10,5,10,5"
+                Background="#FFDDDDDD" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,75,0,0" Click="onBtnLoadImageClick" Panel.ZIndex="3" Height="28" Width="153"
+                />
+        <Button x:Name="btnResetImage" 
+                    Content="Сбросить обработку"
+                    VerticalAlignment="Top"
+                    Padding="10,5,10,5" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="170,75,0,0" Panel.ZIndex="4" Click="btnResetImageClick" Background="#FFEEEEEE" Visibility="Hidden"/>
+        <Button x:Name="btnDownloadImage" 
+                Content="Сохранить изображение в файл"
+                VerticalAlignment="Top"
+                Padding="10,5,10,5"
+                Background="#FFDDDDDD" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="311,75,0,0" Click="onBtnDownloadImageClick" Panel.ZIndex="3" Height="28" Width="199"
+                />
+        <Button x:Name="btnGenerateImage" 
+                Content="Сгенерировать белый шум"
+                VerticalAlignment="Top"
+                Padding="10,5,10,5"
+                Background="#FFDDDDDD" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,115,0,0" Click="onBtnGenerateImageClick" Panel.ZIndex="3" Height="28"
+                />
+        <StackPanel Orientation="Horizontal" Margin="185,120,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Label 
+                    Content="Диапазон яркостей (0-255): Zmin=" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" Grid.IsSharedSizeScope="True" />
+            <TextBox x:Name="txtbGZmin"
+                        TextWrapping="Wrap"
+                        Text="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="50" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" UndoLimit="10"/>
+            <Label 
+                    Content="Zmax=" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" Grid.IsSharedSizeScope="True" Margin="10,0,0,0" />
+            <TextBox x:Name="txtbGZmax"
+                        TextWrapping="Wrap"
+                        Text="255" HorizontalAlignment="Center" VerticalAlignment="Center" Width="50" UndoLimit="10"/>
+
+        </StackPanel>
+        <Border 
+            BorderBrush="Black" 
+            BorderThickness="0,1,0,0"
+            Width="500"
+            Margin="10,155,0,0" Panel.ZIndex="1" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <StackPanel Margin="10,0,10,0">
+                <Label 
+                    Content="Увеличение контрастности" 
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top" FontSize="14"/>
+                <Label 
+                    Content="Логарифмизация шкалы яркости" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                    <Label 
+                    Content="Диапазон яркостей (0-255): Zmin=" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" Grid.IsSharedSizeScope="True" />
+                    <TextBox x:Name="txtbZmin"
+                        TextWrapping="Wrap"
+                        Text="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="50" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" UndoLimit="10"/>
+                    <Label 
+                    Content="Zmax=" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" Grid.IsSharedSizeScope="True" Margin="10,0,0,0" />
+                    <TextBox x:Name="txtbZmax"
+                        TextWrapping="Wrap"
+                        Text="255" HorizontalAlignment="Center" VerticalAlignment="Center" Width="50" UndoLimit="10"/>
+
+                </StackPanel>
+                <Image Height="125" Width="340" Source="/logPprocessing.png"/>
+                <Button x:Name="btnLog" 
+                    Content="Обработать(логарифмизация)"
+                    VerticalAlignment="Center"
+                    Padding="10,5,10,5"
+                    Background="#FFDDDDDD" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,20,0,0" Panel.ZIndex="3" Click="onBtnLogClick"/>
+                <Label 
+                    Content="Степенное преобразование со смещенным нулем: Z'=0,5Zm(1 + (2Zom – 1)^n) " 
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top" Margin="0,20,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                    <Label 
+                    Content="Степень: n = " HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,0,0,0" Grid.IsSharedSizeScope="True" />
+                    <!-- xmlns:sys="clr-namespace:System;assembly=mscorlib" для combo box; sys - имя может быть любым-->
+                    <ComboBox x:Name="cmbPower" Width="50" SelectedIndex="0" BorderThickness="1,1,1,1">
+                        <sys:String>1/3</sys:String>
+                        <sys:String>1/5</sys:String>
+                        <sys:String>1/7</sys:String>
+                        <sys:String>1/9</sys:String>
+                        <sys:String>1/11</sys:String>
+                        <sys:String>1/13</sys:String>
+                        <sys:String>1/15</sys:String>
+                        <sys:String>1/17</sys:String>
+                    </ComboBox>
+                </StackPanel>
+
+                <Button x:Name="btnPowerProccessImage" 
+                    Content="Обработать(степеное преобразование)"
+                    VerticalAlignment="Center"
+                    Padding="10,5,10,5"
+                    Background="#FFDDDDDD" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,20,0,0" Panel.ZIndex="3" Click="onBtnPowerClick"/>
+                <Button x:Name="btnDownloadHist" 
+                    Content="Получить гистограмму яркости"
+                    VerticalAlignment="Top"
+                    Padding="10,5,10,5"
+                    Background="#FFDDDDDD" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,20,0,0" Panel.ZIndex="3" Click="btnDownloadHistClick"/>
+                
+
+            </StackPanel>
+        </Border>
+        <Border 
+            BorderBrush="Gray" 
+            BorderThickness="1" 
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top" 
+            Width="650" Height="650" 
+            Margin="0,20,20,0">
+            <!-- попытка отобразить Картинку пиксел в пиксель через Binding -->
+            <Image 
+                x:Name="imgDisplay" 
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" MouseMove="onImgDisplayMouseMove" 
+                Stretch="UniformToFill" 
+                Width="{Binding RelativeSource={RelativeSource Self}, Path=Source.PixelWidth}"
+                Height="{Binding RelativeSource={RelativeSource Self}, Path=Source.PixelHeight}" 
+                SnapsToDevicePixels="True" MouseDown="onImgDisplayClick"/>
+
+        </Border>
+    </Grid>
+</Window>
